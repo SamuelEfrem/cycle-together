@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container-wide">
+    <h2>Edit Trip: {{ trip.title }}</h2>
+    <p class="form-hint">Only unlocked fields can be edited</p>
+    
+    <form action="{{ url_for('trips.edit_post', trip_id=trip.id) }}" method="post" class="form form-wide">
+        
+        <div class="form-section">
+            <h3>Basic Information</h3>
+            
+            <div class="form-group">
+                <label for="title">Trip Title *</label>
+                <input type="text" id="title" name="title" value="{{ trip.title }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description *</label>
+                <textarea id="description" name="description" rows="4" required>{{ trip.description }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Route Details</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="departure_location">
+                        Departure Location * 
+                        {% if trip.departure_final %}<span class="locked-badge">🔒 Locked</span>{% endif %}
+                    </label>
+                    <input type="text" id="departure_location" name="departure_location" 
+                           value="{{ trip.departure_location }}" required {% if trip.departure_final %}disabled{% endif %}>
+                </div>
+
+                <div class="form-group">
+                    <label for="destination">
+                        Destination * 
+                        {% if trip.destination_final %}<span class="locked-badge">🔒 Locked</span>{% endif %}
+                    </label>
+                    <input type="text" id="destination" name="destination" 
+                           value="{{ trip.destination }}" required {% if trip.destination_final %}disabled{% endif %}>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="route_description">
+                    Route Description 
+                    {% if trip.route_final %}<span class="locked-badge">🔒 Locked</span>{% endif %}
+                </label>
+                <textarea id="route_description" name="route_description" rows="3" 
+                          {% if trip.route_final %}disabled{% endif %}>{{ trip.route_description or '' }}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="distance_km">Distance (km) *</label>
+                    <input type="number" id="distance_km" name="distance_km" step="0.1" 
+                           value="{{ trip.distance_km }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="difficulty">Difficulty Level *</label>
+                    <select id="difficulty" name="difficulty" required>
+                        <option value="beginner" {% if trip.difficulty.name == 'beginner' %}selected{% endif %}>Beginner</option>
+                        <option value="intermediate" {% if trip.difficulty.name == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="advanced" {% if trip.difficulty.name == 'advanced' %}selected{% endif %}>Advanced</option>
+                        <option value="expert" {% if trip.difficulty.name == 'expert' %}selected{% endif %}>Expert</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Dates & Duration {% if trip.dates_final %}<span class="locked-badge">🔒 Locked</span>{% endif %}</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="start_date_min">Start Date (Earliest) *</label>
+                    <input type="date" id="start_date_min" name="start_date_min" 
+                           value="{{ trip.start_date_min }}" required {% if trip.dates_final %}disabled{% endif %}>
+                </div>
+
+                <div class="form-group">
+                    <label for="start_date_max">Start Date (Latest) *</label>
+                    <input type="date" id="start_date_max" name="start_date_max" 
+                           value="{{ trip.start_date_max }}" required {% if trip.dates_final %}disabled{% endif %}>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="duration_days_min">Min Duration (days) *</label>
+                    <input type="number" id="duration_days_min" name="duration_days_min" 
+                           value="{{ trip.duration_days_min }}" min="1" required {% if trip.dates_final %}disabled{% endif %}>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration_days_max">Max Duration (days) *</label>
+                    <input type="number" id="duration_days_max" name="duration_days_max" 
+                           value="{{ trip.duration_days_max }}" min="1" required {% if trip.dates_final %}disabled{% endif %}>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Budget {% if trip.budget_final %}<span class="locked-badge">🔒 Locked</span>{% endif %}</h3>
+            
+            <div class="form-group">
+                <label for="budget_per_person">Budget per Person (€) *</label>
+                <input type="number" id="budget_per_person" name="budget_per_person" step="0.01" 
+                       value="{{ trip.budget_per_person }}" required {% if trip.budget_final %}disabled{% endif %}>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+        <a href="{{ url_for('trips.detail', trip_id=trip.id) }}" class="btn btn-secondary btn-block">Cancel</a>
+    </form>
+</div>
+{% endblock %}

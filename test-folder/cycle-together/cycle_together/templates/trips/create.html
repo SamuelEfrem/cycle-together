@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container-wide">
+    <h2>Create New Cycling Trip</h2>
+    <form action="{{ url_for('trips.create_post') }}" method="post" enctype="multipart/form-data" class="form form-wide">
+        
+        <div class="form-section">
+            <h3>Basic Information</h3>
+            
+            <div class="form-group">
+                <label for="title">Trip Title *</label>
+                <input type="text" id="title" name="title" required placeholder="e.g., Mountain Cycling Adventure in Alps">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description *</label>
+                <textarea id="description" name="description" rows="4" required 
+                          placeholder="Describe your cycling trip vision..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="trip_image">Trip Image (Optional)</label>
+                <input type="file" id="trip_image" name="trip_image" accept="image/*">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Route Details</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="departure_location">Departure Location *</label>
+                    <input type="text" id="departure_location" name="departure_location" required placeholder="e.g., Madrid">
+                </div>
+
+                <div class="form-group">
+                    <label for="destination">Destination *</label>
+                    <input type="text" id="destination" name="destination" required placeholder="e.g., Barcelona">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="route_description">Route Description (Optional)</label>
+                <textarea id="route_description" name="route_description" rows="3" 
+                          placeholder="Describe the planned route, stops, highlights..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="distance_km">Distance (km) *</label>
+                    <input type="number" id="distance_km" name="distance_km" step="0.1" required placeholder="e.g., 250">
+                </div>
+
+                <div class="form-group">
+                    <label for="difficulty">Difficulty Level *</label>
+                    <select id="difficulty" name="difficulty" required>
+                        <option value="beginner">Beginner - Easy terrain, relaxed pace</option>
+                        <option value="intermediate">Intermediate - Moderate hills, steady pace</option>
+                        <option value="advanced">Advanced - Challenging terrain, fast pace</option>
+                        <option value="expert">Expert - Extreme terrain, competitive pace</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Dates & Duration</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="start_date_min">Start Date (Earliest) *</label>
+                    <input type="date" id="start_date_min" name="start_date_min" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="start_date_max">Start Date (Latest) *</label>
+                    <input type="date" id="start_date_max" name="start_date_max" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="duration_days_min">Min Duration (days) *</label>
+                    <input type="number" id="duration_days_min" name="duration_days_min" min="1" required placeholder="e.g., 3">
+                </div>
+
+                <div class="form-group">
+                    <label for="duration_days_max">Max Duration (days) *</label>
+                    <input type="number" id="duration_days_max" name="duration_days_max" min="1" required placeholder="e.g., 5">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Budget & Participants</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="budget_per_person">Budget per Person (€) *</label>
+                    <input type="number" id="budget_per_person" name="budget_per_person" step="0.01" required placeholder="e.g., 500">
+                </div>
+
+                <div class="form-group">
+                    <label for="max_participants">Maximum Participants *</label>
+                    <input type="number" id="max_participants" name="max_participants" min="2" required placeholder="e.g., 10">
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Create Trip</button>
+    </form>
+</div>
+{% endblock %}

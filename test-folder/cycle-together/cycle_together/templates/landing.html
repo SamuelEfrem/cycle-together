@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="landing-hero">
+    <h1>🚴 Welcome to Cycle Together</h1>
+    <p class="hero-subtitle">Plan amazing cycling adventures with fellow cyclists</p>
+    
+    <div class="hero-features">
+        <div class="feature-card">
+            <h3>🗺️ Plan Routes</h3>
+            <p>Create detailed cycling trip proposals with routes, distances, and difficulty levels</p>
+        </div>
+        <div class="feature-card">
+            <h3>👥 Find Cyclists</h3>
+            <p>Connect with other cycling enthusiasts and plan trips together</p>
+        </div>
+        <div class="feature-card">
+            <h3>💬 Communicate</h3>
+            <p>Use message boards and schedule meetups to coordinate your trips</p>
+        </div>
+    </div>
+
+    <div class="hero-cta">
+        <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-large">Get Started</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-secondary btn-large">Login</a>
+    </div>
+</div>
+{% endblock %}

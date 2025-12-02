@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">{{ user.name[0].upper() }}</div>
+        <div class="profile-info">
+            <h2>{{ user.name }}</h2>
+            <p class="profile-email">{{ user.email }}</p>
+            <p class="profile-joined">Joined {{ user.created_at.strftime('%B %Y') }}</p>
+        </div>
+    </div>
+
+    <div class="profile-bio">
+        <h3>About</h3>
+        <p>{{ user.bio or "No bio provided yet." }}</p>
+    </div>
+
+    {% if not view_only %}
+    <div class="profile-edit">
+        <h3>Edit Profile</h3>
+        <form action="{{ url_for('auth.edit_profile') }}" method="post" class="form">
+            <div class="form-group">
+                <label for="name">Display Name</label>
+                <input type="text" id="name" name="name" value="{{ user.name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" rows="4">{{ user.bio or '' }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

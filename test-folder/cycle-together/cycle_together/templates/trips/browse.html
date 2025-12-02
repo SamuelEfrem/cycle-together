@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Browse Cycling Trips</h2>
+    <a href="{{ url_for('trips.create') }}" class="btn btn-primary">Create New Trip</a>
+</div>
+
+<div class="search-filters">
+    <form method="get" class="filters-form">
+        <div class="filter-row">
+            <input type="text" name="search" placeholder="Search trips..." 
+                   value="{{ request.args.get('search', '') }}" class="search-input">
+            
+            <select name="difficulty" class="filter-select">
+                <option value="">All Difficulties</option>
+                <option value="beginner" {% if request.args.get('difficulty') == 'beginner' %}selected{% endif %}>Beginner</option>
+                <option value="intermediate" {% if request.args.get('difficulty') == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                <option value="advanced" {% if request.args.get('difficulty') == 'advanced' %}selected{% endif %}>Advanced</option>
+                <option value="expert" {% if request.args.get('difficulty') == 'expert' %}selected{% endif %}>Expert</option>
+            </select>
+            
+            <input type="number" name="max_distance" placeholder="Max Distance (km)" 
+                   value="{{ request.args.get('max_distance', '') }}" class="filter-input">
+            
+            <input type="number" name="min_budget" placeholder="Min Budget (€)" 
+                   value="{{ request.args.get('min_budget', '') }}" class="filter-input">
+            
+            <input type="number" name="max_budget" placeholder="Max Budget (€)" 
+                   value="{{ request.args.get('max_budget', '') }}" class="filter-input">
+            
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="{{ url_for('trips.browse') }}" class="btn btn-secondary">Clear</a>
+        </div>
+    </form>
+</div>
+
+{% if trips %}
+<div class="trips-grid">
+    {% for trip in trips %}
+    <div class="trip-card">
+        {% if trip.image_url %}
+        <img src="{{ trip.image_url }}" alt="{{ trip.title }}" class="trip-card-image">
+        {% endif %}
+        
+        <div class="trip-card-header">
+            <h3>{{ trip.title }}</h3>
+            <span class="difficulty-badge difficulty-{{ trip.difficulty.name }}">
+                {{ trip.difficulty.name.capitalize() }}
+            </span>
+        </div>
+        
+        <div class="trip-card-body">
+            <p class="trip-description">{{ trip.description[:150] }}...</p>
+            
+            <div class="trip-details">
+                <div class="trip-detail-item">
+                    <span class="detail-icon">📍</span>
+                    <strong>Route:</strong> {{ trip.departure_location }} → {{ trip.destination }}
+                </div>
+                <div class="trip-detail-item">
+                    <span class="detail-icon">📏</span>
+                    <strong>Distance:</strong> {{ trip.distance_km }} km
+                </div>
+                <div class="trip-detail-item">
+                    <span class="detail-icon">📅</span>
+                    <strong>Dates:</strong> 
+                    {{ trip.start_date_min.strftime('%b %d') }} - {{ trip.start_date_max.strftime('%b %d, %Y') }}
+                </div>
+                <div class="trip-detail-item">
+                    <span class="detail-icon">⏱</span>
+                    <strong>Duration:</strong> {{ trip.duration_days_min }}-{{ trip.duration_days_max }} days
+                </div>
+                <div class="trip-detail-item">
+                    <span class="detail-icon">💰</span>
+                    <strong>Budget:</strong> €{{ trip.budget_per_person }} per person
+                </div>
+                <div class="trip-detail-item">
+                    <span class="detail-icon">👥</span>
+                    <strong>Participants:</strong> 
+                    {{ trip.participations|length }}/{{ trip.max_participants }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="trip-card-footer">
+            {% set is_participant = namespace(value=false) %}
+            {% for p in trip.participations %}
+                {% if p.user_id == current_user.id %}
+                    {% set is_participant.value = true %}
+                {% endif %}
+            {% endfor %}
+            
+            {% if is_participant.value %}
+                <a href="{{ url_for('trips.detail', trip_id=trip.id) }}" class="btn btn-success btn-sm">View Trip</a>
+            {% else %}
+                {% if trip.participations|length >= trip.max_participants %}
+                    <button class="btn btn-secondary btn-sm" disabled>Trip Full</button>
+                {% else %}
+                    <form action="{{ url_for('trips.join', trip_id=trip.id) }}" method="post">
+                        <button type="submit" class="btn btn-primary btn-sm">Join Trip</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+            
+            <small>Created by <a href="{{ url_for('auth.view_user', user_id=trip.creator.id) }}">{{ trip.creator.name }}</a></small>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No trips available right now. Be the first to create one!</p>
+    <a href="{{ url_for('trips.create') }}" class="btn btn-primary">Create Trip</a>
+</div>
+{% endif %}
+{% endblock %}

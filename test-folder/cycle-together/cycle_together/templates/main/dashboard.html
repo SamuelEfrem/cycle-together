@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>My Cycling Dashboard 📊</h2>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🚴</div>
+            <div class="stat-value">{{ total_trips }}</div>
+            <div class="stat-label">Total Trips</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">🔥</div>
+            <div class="stat-value">{{ active_trips }}</div>
+            <div class="stat-label">Active Trips</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value">{{ finalized_trips }}</div>
+            <div class="stat-label">Completed Trips</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">📏</div>
+            <div class="stat-value">{{ "%.0f"|format(total_distance) }}</div>
+            <div class="stat-label">Total KM Planned</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value">{{ created_trips }}</div>
+            <div class="stat-label">Trips Created</div>
+        </div>
+    </div>
+    
+    <div class="dashboard-section">
+        <h3>Difficulty Breakdown</h3>
+        <div class="difficulty-chart">
+            {% for difficulty, count in difficulty_stats.items() %}
+            <div class="chart-bar">
+                <div class="bar-label">{{ difficulty.capitalize() }}</div>
+                <div class="bar-container">
+                    <div class="bar-fill difficulty-{{ difficulty }}" style="width: {{ (count / total_trips * 100)|round }}%">
+                        {{ count }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="dashboard-section">
+        <h3>Recent Trips</h3>
+        <div class="trips-list">
+            {% for participation in recent_trips %}
+            <div class="trip-list-item">
+                <div class="trip-list-content">
+                    <h4><a href="{{ url_for('trips.detail', trip_id=participation.trip.id) }}">{{ participation.trip.title }}</a></h4>
+                    <span class="status-badge status-{{ participation.trip.status.name }}">{{ participation.trip.status.name.replace('_', ' ').title() }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

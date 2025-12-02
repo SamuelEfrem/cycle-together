@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2>My Trips</h2>
+    <a href="{{ url_for('trips.create') }}" class="btn btn-primary">Create New Trip</a>
+</div>
+
+{% if trips %}
+<div class="trips-list">
+    {% for trip in trips %}
+    <div class="trip-list-item">
+        <div class="trip-list-content">
+            <h3>
+                <a href="{{ url_for('trips.detail', trip_id=trip.id) }}">{{ trip.title }}</a>
+            </h3>
+            <div class="trip-meta">
+                <span class="status-badge status-{{ trip.status.name }}">{{ trip.status.name.replace('_', ' ').title() }}</span>
+                <span class="difficulty-badge difficulty-{{ trip.difficulty.name }}">{{ trip.difficulty.name }}</span>
+                <span>{{ trip.distance_km }} km</span>
+                <span>{{ trip.participations|length }}/{{ trip.max_participants }} participants</span>
+            </div>
+            <p>{{ trip.departure_location }} → {{ trip.destination }}</p>
+        </div>
+        <div class="trip-list-actions">
+            <a href="{{ url_for('trips.detail', trip_id=trip.id) }}" class="btn btn-secondary btn-sm">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>You haven't joined any trips yet.</p>
+    <a href="{{ url_for('trips.browse') }}" class="btn btn-primary">Browse Trips</a>
+</div>
+{% endif %}
+{% endblock %}
